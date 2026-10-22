@@ -3,720 +3,882 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Der neue Tesla Roadster</title>
-<meta name="description" content="Fan-Seite zum neuen Tesla Roadster, enthüllt am 15. Oktober 2026.">
-<link rel="stylesheet" href="fonts/fonts.css">
+<meta name="theme-color" content="#0b0c10">
+<title>Eliah</title>
 <style>
-  /* Look: Nacht, Asphalt, ein weißes Auto im Scheinwerferlicht. Ruhige Flächen, harte Kanten wie beim Cybertruck. */
-  :root {
-    color-scheme: dark;
-    --bg: #07080a;
-    --panel: #101216;
-    --line: rgba(255, 255, 255, .08);
-    --fg: #eef0f2;
-    --muted: #8b939c;
-    --red: #e31937;
-    --ice: #9fd8ff;
-    --gold: #d8b46a;
-    --font-display: "Michroma", "Eurostile", "Arial Black", sans-serif;
-    --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  html, body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+    background: #0b0c10;
+    overscroll-behavior: none;
   }
-  * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
-  body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 1.06rem; line-height: 1.6; overflow-x: hidden; }
-  button { font: inherit; color: inherit; }
-  :focus-visible { outline: 2px solid var(--ice); outline-offset: 3px; }
-  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 max(20px, env(safe-area-inset-left, 0px)); }
-  h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(1.6rem, 4vw, 2.6rem); line-height: 1.2; margin: 0 0 14px; letter-spacing: .02em; }
-  .kicker { font-size: .78rem; letter-spacing: .3em; text-transform: uppercase; color: var(--red); margin: 0 0 12px; }
-  .intro { color: var(--muted); max-width: 60ch; margin: 0 0 36px; }
-  section.block { padding: clamp(80px, 12vw, 140px) 0; position: relative; }
-
-  /* ---------- Hero ---------- */
-  .hero { position: relative; height: 100svh; min-height: 560px; overflow: hidden; background: radial-gradient(ellipse at 50% 70%, #151a22 0%, var(--bg) 65%); }
-  #stars, #fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-  #fx { z-index: 4; }
-  .floor {
-    position: absolute; left: -50%; right: -50%; bottom: -10%; height: 48%;
-    background-image: linear-gradient(rgba(159, 216, 255, .22) 1px, transparent 1px), linear-gradient(90deg, rgba(159, 216, 255, .22) 1px, transparent 1px);
-    background-size: 70px 70px;
-    transform: perspective(380px) rotateX(62deg); transform-origin: 50% 0;
-    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 35%); mask-image: linear-gradient(to bottom, transparent, #000 35%);
-    animation: floorRun .9s linear infinite;
+  canvas {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    display: block;
+    touch-action: none;
   }
-  .hero.landed .floor { animation-duration: 6s; }
-  @keyframes floorRun { to { background-position: 0 70px; } }
-  .horizon { position: absolute; left: 0; right: 0; top: 52%; height: 2px; background: linear-gradient(90deg, transparent, rgba(159, 216, 255, .7), transparent); box-shadow: 0 0 40px 6px rgba(159, 216, 255, .25); }
-  .spot { position: absolute; left: 50%; top: 66%; width: 90vw; height: 22vh; transform: translate(-50%, -50%); background: radial-gradient(ellipse, rgba(255, 255, 255, .16), transparent 65%); opacity: 0; transition: opacity 1s ease; }
-  .hero.landed .spot { opacity: 1; }
-  .car-hero { position: absolute; left: 50%; top: 66%; width: min(84vw, 780px); z-index: 3; transform: translate(-50%, -50%); will-change: transform; }
-  .car-hero svg { display: block; width: 100%; height: auto; overflow: visible; }
-  .shadow { position: absolute; left: 50%; top: calc(66% + min(84vw, 780px) * .1); width: min(70vw, 640px); height: 34px; transform: translate(-50%, -50%) scale(.2); border-radius: 50%; background: radial-gradient(ellipse, rgba(0, 0, 0, .85), transparent 70%); opacity: 0; z-index: 2; }
-  .title { position: absolute; left: 0; right: 0; top: 13%; text-align: center; z-index: 5; pointer-events: none; }
-  .title .pre { font-size: .8rem; letter-spacing: .5em; text-transform: uppercase; color: var(--muted); opacity: 0; }
-  .title h1 { margin: 10px 0 0; font-family: var(--font-display); font-weight: 400; font-size: clamp(2.6rem, 11vw, 8.5rem); line-height: 1; letter-spacing: .08em; }
-  .title h1 span { display: inline-block; opacity: 0; }
-  .hero.landed .title .pre { animation: fadeUp .8s ease .1s both; }
-  .hero.landed .title h1 span { animation: slam .7s cubic-bezier(.2, 1.6, .4, 1) both; animation-delay: calc(var(--i) * 60ms + .15s); }
-  @keyframes slam { 0% { opacity: 0; transform: translateY(-80px) scale(2.2); filter: blur(12px); text-shadow: -8px 0 var(--red), 8px 0 var(--ice); } 60% { opacity: 1; filter: none; text-shadow: -4px 0 var(--red), 4px 0 var(--ice); } 100% { opacity: 1; transform: none; text-shadow: none; } }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
-  .stat-live { position: absolute; left: 0; right: 0; bottom: 7%; z-index: 5; text-align: center; opacity: 0; }
-  .hero.landed .stat-live { animation: fadeUp .8s ease 1s both; }
-  .stat-live .num { font-family: var(--font-display); font-size: clamp(2rem, 6vw, 3.4rem); color: #fff; text-shadow: 0 0 30px rgba(159, 216, 255, .6); }
-  .stat-live .lbl { display: block; font-size: .78rem; letter-spacing: .25em; text-transform: uppercase; color: var(--muted); }
-  .scroll-hint { position: absolute; left: 50%; bottom: 18px; width: 22px; height: 36px; margin-left: -11px; border: 2px solid rgba(255, 255, 255, .3); border-radius: 12px; z-index: 5; opacity: 0; }
-  .scroll-hint::after { content: ""; position: absolute; left: 50%; top: 7px; width: 4px; height: 8px; margin-left: -2px; border-radius: 2px; background: #fff; animation: wheel 1.6s ease infinite; }
-  .hero.landed .scroll-hint { animation: fadeUp .6s ease 2.2s both; }
-  @keyframes wheel { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(12px); opacity: 0; } }
-  .hero.shake { animation: shake .5s cubic-bezier(.36, .07, .19, .97); }
-  @keyframes shake { 10%, 90% { transform: translate(-2px, 1px); } 20%, 80% { transform: translate(5px, -3px); } 30%, 50%, 70% { transform: translate(-9px, 4px); } 40%, 60% { transform: translate(9px, -2px); } }
-  .headlight { opacity: 0; transition: opacity .2s; }
-  .hero.landed .headlight { animation: blink 1.2s ease .2s both; }
-  @keyframes blink { 0%, 20%, 40% { opacity: 0; } 10%, 30%, 100% { opacity: 1; } }
-  .beam { position: absolute; top: 66%; left: 50%; width: 60vw; height: 160px; transform-origin: 0 50%; transform: translate(min(36vw, 330px), -40%); background: linear-gradient(90deg, rgba(255, 255, 255, .28), transparent 80%); clip-path: polygon(0 45%, 100% 0, 100% 100%, 0 55%); opacity: 0; z-index: 1; pointer-events: none; }
-  .hero.landed .beam { animation: blink 1.2s ease .2s both; }
-
-  /* ---------- Einblenden beim Scrollen ---------- */
-  .reveal { opacity: 0; transform: translateY(40px); transition: opacity .9s ease, transform .9s cubic-bezier(.2, .9, .3, 1); }
-  .reveal.in { opacity: 1; transform: none; }
-
-  /* ---------- Zahlen ---------- */
-  .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
-  .stat { background: var(--bg); padding: 30px 22px; }
-  .stat .v { font-family: var(--font-display); font-size: clamp(1.7rem, 3.6vw, 2.6rem); line-height: 1.1; white-space: nowrap; }
-  .stat .v small { font-size: .45em; color: var(--muted); margin-left: 4px; }
-  .stat .d { color: var(--muted); font-size: .92rem; margin-top: 10px; }
-
-  /* ---------- Drag-Rennen ---------- */
-  .race { border: 1px solid var(--line); background: var(--panel); padding: 24px clamp(14px, 3vw, 28px); }
-  .lane { display: grid; grid-template-columns: 150px minmax(0, 1fr) 82px; gap: 16px; align-items: center; padding: 12px 0; border-bottom: 1px dashed var(--line); }
-  .lane:last-of-type { border-bottom: 0; }
-  .lane .name { font-family: var(--font-display); font-size: .85rem; letter-spacing: .06em; }
-  .lane .name small { display: block; font-family: var(--font-body); color: var(--muted); font-size: .78rem; letter-spacing: 0; }
-  .track { position: relative; height: 46px; background: repeating-linear-gradient(90deg, transparent 0 38px, rgba(255, 255, 255, .06) 38px 40px); border-right: 3px solid var(--red); }
-  .track .mini { position: absolute; left: 0; top: 50%; width: 110px; transform: translate(0, -50%); }
-  .track .mini svg { width: 100%; height: auto; display: block; }
-  .track .trail { position: absolute; left: 0; top: 50%; height: 3px; width: 0; margin-top: 4px; background: linear-gradient(90deg, transparent, var(--ice)); opacity: .8; }
-  .lane .time { font-family: var(--font-display); font-size: 1rem; text-align: right; font-variant-numeric: tabular-nums; }
-  .lane.won .time { color: var(--ice); text-shadow: 0 0 18px rgba(159, 216, 255, .8); }
-  .race-foot { display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; align-items: center; margin-top: 18px; color: var(--muted); font-size: .88rem; }
-  .btn { padding: 12px 22px; border: 1px solid rgba(255, 255, 255, .25); background: none; cursor: pointer; letter-spacing: .14em; text-transform: uppercase; font-size: .8rem; transition: background .2s, border-color .2s; }
-  .btn:hover { background: rgba(255, 255, 255, .08); border-color: #fff; }
-  .btn.red { border-color: var(--red); background: var(--red); }
-  .btn.red:hover { background: #ff2a49; }
-
-  /* ---------- Versionen ---------- */
-  .trims { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; perspective: 1000px; }
-  .trim { position: relative; padding: 28px 24px 26px; background: linear-gradient(160deg, #171a20, #0c0e11); border: 1px solid var(--line); transform-style: preserve-3d; transition: transform .15s ease-out, border-color .3s; overflow: hidden; }
-  .trim:hover { border-color: rgba(255, 255, 255, .25); }
-  .trim::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at var(--mx, 50%) var(--my, 0%), rgba(255, 255, 255, .12), transparent 55%); pointer-events: none; }
-  .trim .tag { font-size: .72rem; letter-spacing: .25em; text-transform: uppercase; color: var(--muted); }
-  .trim h3 { font-family: var(--font-display); font-weight: 400; font-size: 1.5rem; margin: 8px 0 18px; }
-  .trim .big { font-family: var(--font-display); font-size: 2.2rem; line-height: 1; }
-  .trim .big small { font-size: .38em; color: var(--muted); display: block; margin-top: 8px; font-family: var(--font-body); letter-spacing: .05em; }
-  .trim ul { list-style: none; padding: 0; margin: 22px 0 0; display: grid; gap: 8px; color: #c3c8ce; font-size: .95rem; }
-  .trim li::before { content: "— "; color: var(--red); }
-  .trim.rocket { border-color: rgba(227, 25, 55, .45); }
-  .trim.rocket .big { color: #fff; text-shadow: 0 0 22px rgba(227, 25, 55, .7); }
-  .gauge { display: block; width: 100%; height: 8px; margin-top: 18px; background: rgba(255, 255, 255, .08); overflow: hidden; }
-  .gauge i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--red), #ff6a7d); transition: width 1.4s cubic-bezier(.2, .9, .3, 1); }
-
-  /* ---------- Fliegen ---------- */
-  .fly { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 60px); align-items: center; }
-  .fly-stage { position: relative; aspect-ratio: 4 / 3; border: 1px solid var(--line); background: radial-gradient(ellipse at 50% 85%, #1b222c, #0a0b0d 70%); overflow: hidden; }
-  .fly-stage .ground { position: absolute; left: 0; right: 0; bottom: 0; height: 22%; background: linear-gradient(#14181e, #0b0d10); border-top: 1px solid rgba(159, 216, 255, .25); }
-  .fly-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .fly-car { position: absolute; left: 50%; bottom: 22%; width: 74%; transform: translate(-50%, 0); will-change: transform; }
-  .fly-car svg { display: block; width: 100%; height: auto; overflow: visible; }
-  .fly-buttons { position: absolute; left: 14px; bottom: 14px; display: flex; gap: 8px; z-index: 2; }
-  .fly-buttons .btn { background: rgba(7, 8, 10, .7); padding: 9px 14px; }
-  .facts { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
-  .facts li { padding-left: 18px; border-left: 2px solid var(--red); }
-  .facts b { display: block; font-family: var(--font-display); font-weight: 400; font-size: .95rem; letter-spacing: .04em; margin-bottom: 2px; }
-  .facts span { color: var(--muted); font-size: .95rem; }
-
-  /* ---------- Design ---------- */
-  .design { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
-  .design div { background: var(--bg); padding: 26px 22px; }
-  .design b { display: block; font-family: var(--font-display); font-weight: 400; font-size: .95rem; margin-bottom: 6px; }
-  .design span { color: var(--muted); font-size: .94rem; }
-
-  /* ---------- Zeitleiste ---------- */
-  .timeline { position: relative; margin: 0; padding: 0 0 0 34px; list-style: none; }
-  .timeline::before { content: ""; position: absolute; left: 8px; top: 6px; bottom: 6px; width: 2px; background: var(--line); }
-  .timeline .bar { position: absolute; left: 8px; top: 6px; width: 2px; height: 0; background: linear-gradient(var(--ice), var(--red)); box-shadow: 0 0 12px rgba(159, 216, 255, .6); transition: height .2s linear; }
-  .timeline li { position: relative; padding: 0 0 34px; }
-  .timeline li::before { content: ""; position: absolute; left: -32px; top: 7px; width: 14px; height: 14px; border-radius: 50%; background: var(--bg); border: 2px solid var(--muted); transition: border-color .3s, box-shadow .3s; }
-  .timeline li.lit::before { border-color: var(--ice); box-shadow: 0 0 14px var(--ice); }
-  .timeline .when { font-family: var(--font-display); font-size: .9rem; color: var(--ice); }
-  .timeline .what { color: #c3c8ce; }
-  .timeline li.future .when { color: var(--red); }
-
-  /* ---------- Reservierung ---------- */
-  .reserve { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
-  .reserve div { border: 1px solid var(--line); padding: 26px 22px; background: var(--panel); }
-  .reserve .v { font-family: var(--font-display); font-size: 1.9rem; }
-  .reserve span { color: var(--muted); font-size: .94rem; }
-
-  footer { border-top: 1px solid var(--line); padding: 40px 0 60px; color: var(--muted); font-size: .88rem; }
-  footer a { color: #c3c8ce; }
-
-  @media (max-width: 860px) {
-    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .trims, .reserve, .design { grid-template-columns: minmax(0, 1fr); }
-    .fly { grid-template-columns: minmax(0, 1fr); }
-    .lane { grid-template-columns: 96px minmax(0, 1fr) 64px; gap: 10px; }
-    .track .mini { width: 74px; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0s !important; transition-duration: .01ms !important; }
-    html { scroll-behavior: auto; }
-  }
-
-  /* ---------- 3D-Ansicht ---------- */
-  .viewer { position: relative; aspect-ratio: 16 / 9; min-height: 380px; border: 1px solid var(--line); background: #07080a; overflow: hidden; }
-  .viewer canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; touch-action: none; }
-  .viewer canvas:active { cursor: grabbing; }
-  .viewer-ui { position: absolute; left: 14px; bottom: 14px; display: flex; flex-wrap: wrap; gap: 8px; z-index: 2; }
-  .viewer-ui .btn { background: rgba(7, 8, 10, .7); padding: 9px 14px; }
-  .viewer-ui .btn.on { border-color: var(--ice); color: var(--ice); }
-  .viewer-msg { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: .9rem; letter-spacing: .2em; text-transform: uppercase; pointer-events: none; transition: opacity .6s; }
-  .viewer-hint { position: absolute; right: 14px; top: 12px; color: var(--muted); font-size: .78rem; letter-spacing: .15em; text-transform: uppercase; pointer-events: none; }
-  @media (max-width: 860px) { .viewer { aspect-ratio: 4 / 5; } }
+  body.no-webgl { background: #f6f3ec; }
 </style>
-<script type="importmap">{ "imports": { "three": "./vendor/three.module.js", "three/addons/controls/OrbitControls.js": "./vendor/OrbitControls.js", "three/addons/environments/RoomEnvironment.js": "./vendor/RoomEnvironment.js" } }</script>
 </head>
 <body>
-
-<!-- Das Auto, einmal gezeichnet und überall wiederverwendet. Seitenansicht, Front rechts. -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs>
-    <!-- Lack „Ano White“: oben hell, unter der Kante dunkler -->
-    <linearGradient id="paint" x1="0" y1="80" x2="0" y2="225" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#eef0f1"/><stop offset=".62" stop-color="#d4d8dc"/><stop offset="1" stop-color="#7d848c"/>
-    </linearGradient>
-    <linearGradient id="paintLow" x1="0" y1="170" x2="0" y2="225" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#b9bfc5"/><stop offset="1" stop-color="#6c737b"/>
-    </linearGradient>
-    <linearGradient id="sheen" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
-    </linearGradient>
-    <linearGradient id="glass" x1="360" y1="88" x2="700" y2="134" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#5a3f12"/><stop offset=".35" stop-color="#c9973d"/><stop offset=".6" stop-color="#f3d892"/><stop offset="1" stop-color="#7a5418"/>
-    </linearGradient>
-    <linearGradient id="carbon" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#2b3037"/><stop offset="1" stop-color="#0c0e11"/>
-    </linearGradient>
-    <radialGradient id="tire" cx="0" cy="0" r="54" gradientUnits="userSpaceOnUse">
-      <stop offset=".78" stop-color="#1d2025"/><stop offset=".9" stop-color="#2a2e34"/><stop offset="1" stop-color="#060708"/>
-    </radialGradient>
-    <radialGradient id="disc" cx="0" cy="0" r="34" gradientUnits="userSpaceOnUse">
-      <stop offset=".3" stop-color="#3a3f45"/><stop offset=".85" stop-color="#8f969d"/><stop offset="1" stop-color="#5b6168"/>
-    </radialGradient>
-    <linearGradient id="spokeG" x1="-10" y1="-40" x2="10" y2="0" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#f4f6f8"/><stop offset="1" stop-color="#8d949b"/>
-    </linearGradient>
-    <filter id="glow" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-    <clipPath id="bodyClip"><path d="M968 164 L585 82 L44 140 L40 206 L70 224 L930 224 L962 210 Z"/></clipPath>
-
-    <!-- Ein Rad, um (0,0) gezeichnet: Reifen, Bremsscheibe, roter Sattel, fünf Doppelspeichen -->
-    <path id="spoke" d="M-3.5 -10 L-10 -40.5 L-3 -41.5 L0 -16 L3 -41.5 L10 -40.5 L3.5 -10 Z" fill="url(#spokeG)"/>
-    <g id="wheel">
-      <circle r="54" fill="url(#tire)"/>
-      <circle r="43" fill="#0b0d10"/>
-      <circle r="34" fill="url(#disc)"/>
-      <circle r="34" fill="none" stroke="#2b3036" stroke-width="1" stroke-dasharray="2 4"/>
-      <path d="M17 -33 A37 37 0 0 1 37 -3 L28 -2 A28 28 0 0 0 13 -25 Z" fill="#d81e35"/>
-      <use href="#spoke"/><use href="#spoke" transform="rotate(72)"/><use href="#spoke" transform="rotate(144)"/><use href="#spoke" transform="rotate(216)"/><use href="#spoke" transform="rotate(288)"/>
-      <circle r="42" fill="none" stroke="#b7bec5" stroke-width="2.5"/>
-      <circle r="45.5" fill="none" stroke="#000" stroke-opacity=".6" stroke-width="2"/>
-      <circle r="10" fill="#d5dade"/><circle r="4.5" fill="#2a2e33"/>
-    </g>
-
-    <symbol id="car" viewBox="0 0 1000 300">
-      <!-- Grundform: ein Keil, von der Nase gerade zum Dachpunkt, dann gerade zum Heck -->
-      <path d="M968 164 L585 82 L44 140 L40 206 L70 224 L930 224 L962 210 Z" fill="url(#paint)"/>
-      <g clip-path="url(#bodyClip)">
-        <!-- Unterer Teil unter der Kante dunkler -->
-        <path d="M0 172 L1000 202 L1000 260 L0 260 Z" fill="url(#paintLow)"/>
-        <!-- Spiegelung des Himmels als schräger Lichtstreifen -->
-        <path d="M600 60 L700 60 L520 260 L420 260 Z" fill="url(#sheen)" opacity=".55"/>
-        <path d="M150 60 L190 60 L70 260 L30 260 Z" fill="url(#sheen)" opacity=".35"/>
-        <!-- Kohlefaser-Schweller -->
-        <path d="M60 212 L940 218 L930 230 L60 230 Z" fill="url(#carbon)"/>
-      </g>
-      <!-- Scharfe Kanten -->
-      <path d="M44 172 L962 200" stroke="#fff" stroke-width="1.6" opacity=".9"/>
-      <path d="M44 173.5 L962 201.5" stroke="#5f666e" stroke-width="1" opacity=".55"/>
-      <path d="M968 164 L585 82 L44 140" stroke="#fff" stroke-width="2.2" fill="none" stroke-linejoin="round"/>
-      <!-- Scheiben: goldgetönt wie ein Raumanzug-Visier -->
-      <path d="M736 125 L588 89 L360 110 L430 131 L700 135 Z" fill="url(#glass)"/>
-      <path d="M736 125 L588 89 L360 110 L430 131 L700 135 Z" fill="none" stroke="#1b1408" stroke-width="2.5" stroke-linejoin="round"/>
-      <!-- Kopfstützen schimmern durch -->
-      <path d="M470 113 Q478 100 492 103 L494 126 L474 127 Z" fill="#2a1d08" opacity=".45"/>
-      <path d="M548 106 Q556 94 570 97 L572 124 L552 125 Z" fill="#2a1d08" opacity=".35"/>
-      <path d="M600 92 L670 110 L520 100 Z" fill="#fff" opacity=".35"/>
-      <!-- Tür und Kamera statt Spiegel -->
-      <path d="M680 137 L668 214 M432 132 L444 214" stroke="#41474e" stroke-width="1.2" opacity=".55"/>
-      <path d="M716 130 L740 127 L738 134 L718 136 Z" fill="#15181c"/>
-      <!-- Luftschlitz vor dem Hinterrad -->
-      <path d="M318 176 L410 164 L414 178 L330 190 Z" fill="#0d0f12"/>
-      <path d="M326 186 L410 175" stroke="#3b4148" stroke-width="1"/>
-      <!-- Radhäuser: eckig wie beim Cybertruck, mit schwarzer Blende -->
-      <path d="M137 228 L160 147 L270 147 L293 228 Z" fill="#07080a"/>
-      <path d="M702 228 L725 147 L835 147 L858 228 Z" fill="#07080a"/>
-      <path d="M131 226 L155 143 L275 143 L299 226" fill="none" stroke="#1c2025" stroke-width="7" stroke-linejoin="round"/>
-      <path d="M696 226 L720 143 L840 143 L864 226" fill="none" stroke="#1c2025" stroke-width="7" stroke-linejoin="round"/>
-      <use href="#wheel" x="215" y="208"/>
-      <use href="#wheel" x="780" y="208"/>
-      <!-- Front: Splitter und Lichtleiste -->
-      <path d="M884 224 L975 214 L978 220 L890 230 Z" fill="#111418"/>
-      <path class="headlight" d="M906 190 L964 180" stroke="#eaf6ff" stroke-width="4" stroke-linecap="round" filter="url(#glow)"/>
-      <!-- Heck: durchgehendes Rücklicht, Diffusor, zwei Kaltgas-Düsen -->
-      <path d="M43 146 L44 163" stroke="#ff2340" stroke-width="6" stroke-linecap="round" filter="url(#glow)"/>
-      <path d="M44 140 L310 112" stroke="#ff2340" stroke-width="1.6" opacity=".8"/>
-      <path d="M40 206 L118 214 L112 230 L54 228 Z" fill="#101317"/>
-      <path d="M62 214 L60 228 M78 216 L76 229 M94 217 L92 229" stroke="#2f353c" stroke-width="2"/>
-      <g fill="#14171b" stroke="#454c54" stroke-width="2"><ellipse cx="40" cy="178" rx="5" ry="8"/><ellipse cx="40" cy="196" rx="5" ry="7"/></g>
-    </symbol>
-  </defs>
-</svg>
-
-<header class="hero" id="hero">
-  <canvas id="stars" aria-hidden="true"></canvas>
-  <div class="horizon"></div>
-  <div class="floor"></div>
-  <div class="spot"></div>
-  <div class="beam"></div>
-  <div class="shadow" id="shadow"></div>
-  <div class="car-hero" id="hero-car"><svg viewBox="0 0 1000 300" role="img" aria-label="Der neue Tesla Roadster, Seitenansicht"><use href="#car"/></svg></div>
-  <canvas id="fx" aria-hidden="true"></canvas>
-  <div class="title">
-    <div class="pre">Tesla · enthüllt am 15. Oktober 2026</div>
-    <h1 aria-label="Roadster"><span style="--i:0">R</span><span style="--i:1">O</span><span style="--i:2">A</span><span style="--i:3">D</span><span style="--i:4">S</span><span style="--i:5">T</span><span style="--i:6">E</span><span style="--i:7">R</span></h1>
-  </div>
-  <div class="stat-live"><span class="num" id="live">0,00 s</span><span class="lbl">0–60 mph bei der Vorführung</span></div>
-  <div class="scroll-hint" aria-hidden="true"></div>
-</header>
-
-<main>
-  <section class="block" id="sec-3d">
-    <div class="wrap">
-      <p class="kicker reveal">In 3D</p>
-      <h2 class="reveal">Dreh ihn selbst</h2>
-      <p class="intro reveal">Ziehen zum Drehen, Mausrad oder zwei Finger zum Zoomen. Frei nachgebaut, kein offizielles Modell.</p>
-      <div class="viewer reveal" id="viewer">
-        <canvas id="c3d" aria-label="Drehbares 3D-Modell des Roadsters"></canvas>
-        <div class="viewer-msg" id="msg3d">3D wird geladen …</div>
-        <div class="viewer-hint" aria-hidden="true">↻ ziehen</div>
-        <div class="viewer-ui">
-          <button class="btn" id="b3-flip" type="button">Kickflip</button>
-          <button class="btn" id="b3-track" type="button">Track Mode</button>
-          <button class="btn on" id="b3-lights" type="button">Licht</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="block">
-    <div class="wrap">
-      <p class="kicker reveal">Die Zahlen</p>
-      <h2 class="reveal">Schneller als alles auf der Straße</h2>
-      <p class="intro reveal">Alle Werte sind Angaben von Tesla. Unabhängig gemessen hat sie noch niemand.</p>
-      <div class="stats reveal">
-        <div class="stat"><div class="v">&lt; <span class="count" data-to="0.59" data-dec="2">0</span><small>s</small></div><div class="d">0–60 mph (0–97 km/h) in der stärksten Version „Rocket“</div></div>
-        <div class="stat"><div class="v">&gt; <span class="count" data-to="370" data-dec="0">0</span><small>km/h</small></div><div class="d">Spitze, über 230 mph (Rocket)</div></div>
-        <div class="stat"><div class="v">&gt; <span class="count" data-to="480" data-dec="0">0</span><small>km</small></div><div class="d">Reichweite, über 300 Meilen</div></div>
-        <div class="stat"><div class="v"><span class="count" data-to="2028" data-dec="0" data-plain>0</span></div><div class="d">geplanter Produktionsstart laut Elon Musk</div></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="block" id="race-sec">
-    <div class="wrap">
-      <p class="kicker reveal">Drag-Rennen</p>
-      <h2 class="reveal">Von 0 auf 60 mph</h2>
-      <p class="intro reveal">Die drei Versionen gegeneinander, dazu das Versprechen von 2017. Gezeigt in doppelter Zeitlupe, sonst sieht man nichts.</p>
-      <div class="race reveal" id="race">
-        <div class="lane" data-t="0.59"><div class="name">Rocket<small>unter 0,59 s</small></div><div class="track"><div class="trail"></div><div class="mini"><svg viewBox="0 0 1000 300"><use href="#car"/></svg></div></div><div class="time">0,00</div></div>
-        <div class="lane" data-t="0.9"><div class="name">Thrust<small>unter 0,9 s</small></div><div class="track"><div class="trail"></div><div class="mini"><svg viewBox="0 0 1000 300"><use href="#car"/></svg></div></div><div class="time">0,00</div></div>
-        <div class="lane" data-t="1.6"><div class="name">Performance<small>unter 1,6 s</small></div><div class="track"><div class="trail"></div><div class="mini"><svg viewBox="0 0 1000 300"><use href="#car"/></svg></div></div><div class="time">0,00</div></div>
-        <div class="lane" data-t="1.9"><div class="name">2017<small>damals versprochen: 1,9 s</small></div><div class="track"><div class="trail"></div><div class="mini" style="opacity:.55"><svg viewBox="0 0 1000 300"><use href="#car"/></svg></div></div><div class="time">0,00</div></div>
-        <div class="race-foot"><span>Zum Vergleich: Bei der Vorführung zeigte die Anzeige 0,81 s.</span><button class="btn red" id="race-btn" type="button">Nochmal starten</button></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="block">
-    <div class="wrap">
-      <p class="kicker reveal">Drei Versionen</p>
-      <h2 class="reveal">Performance, Thrust, Rocket</h2>
-      <p class="intro reveal">Thrust und Rocket sind Aufrüstungen auf das Grundauto. Je mehr Düsen, desto wilder.</p>
-      <div class="trims">
-        <article class="trim reveal">
-          <div class="tag">Straße</div><h3>Performance</h3>
-          <div class="big">&lt; 1,6 s<small>0–60 mph</small></div>
-          <span class="gauge"><i style="--w:37%"></i></span>
-          <ul><li>Zwei Sitze</li><li>Aktive Aerodynamik</li><li>Saug-System für Bodenhaftung</li><li>Reservierung möglich</li></ul>
-        </article>
-        <article class="trim reveal">
-          <div class="tag">Rennstrecke</div><h3>Thrust</h3>
-          <div class="big">&lt; 0,9 s<small>0–60 mph</small></div>
-          <span class="gauge"><i style="--w:66%"></i></span>
-          <ul><li>Zwei Sitze</li><li>Kaltgas-Düsen am Heck</li><li>Limitierte Auflage</li></ul>
-        </article>
-        <article class="trim rocket reveal">
-          <div class="tag">Nur auf Einladung</div><h3>Rocket</h3>
-          <div class="big">&lt; 0,59 s<small>0–60 mph · über 230 mph Spitze</small></div>
-          <span class="gauge"><i style="--w:100%"></i></span>
-          <ul><li>Ein Sitz</li><li>Düsen rundum: hebt ab und dreht sich</li><li>Nicht für die öffentliche Straße zugelassen</li></ul>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="block">
-    <div class="wrap fly">
-      <div class="fly-stage reveal" id="stage">
-        <canvas id="stage-fx" aria-hidden="true"></canvas>
-        <div class="ground"></div>
-        <div class="fly-car" id="fly-car"><svg viewBox="0 0 1000 300" role="img" aria-label="Roadster mit Düsen"><use href="#car"/></svg></div>
-        <div class="fly-buttons"><button class="btn" id="btn-hover" type="button">Abheben</button><button class="btn" id="btn-flip" type="button">Kickflip</button></div>
-      </div>
-      <div>
-        <p class="kicker reveal">Kann er fliegen?</p>
-        <h2 class="reveal">Ein bisschen, mit Druckluft</h2>
-        <ul class="facts">
-          <li class="reveal"><b>Kaltgas-Düsen</b><span>Statt Raketenfeuer strömt gespeichertes Gas aus. Damit springt das Auto und kann sich sogar überschlagen.</span></li>
-          <li class="reveal"><b>Gas in Kohlefaser-Tanks</b><span>Das Gas steckt in umwickelten Drucktanks. Mehr Gas bedeutet mehr „Flugzeit“.</span></li>
-          <li class="reveal"><b>4- bis 5-mal stärker als die Reifen</b><span>So viel Kraft sollen die Düsen laut Tesla erzeugen.</span></li>
-          <li class="reveal"><b>Kopfüber an der Decke</b><span>Lüfter saugen Luft unter dem Auto weg. Das soll es sogar im Stand kopfüber halten.</span></li>
-          <li class="reveal"><b>Track Mode</b><span>Das Auto senkt sich ab und fährt Flügel aus. Abtrieb laut Tesla „fast wie in der Formel 1“.</span></li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <section class="block">
-    <div class="wrap">
-      <p class="kicker reveal">Design</p>
-      <h2 class="reveal">Wie ein Kampfjet in Weiß</h2>
-      <p class="intro reveal">Tesla nennt als Vorbilder die Aufklärer SR-71 und F-35. Die Formensprache kommt vom Cybertruck.</p>
-      <div class="design reveal">
-        <div><b>Ano White</b><span>Neue weiße Lackierung, glatte Flächen, Aerodynamik bündig eingebaut.</span></div>
-        <div><b>Goldene Scheiben</b><span>Getönt wie das Visier eines Raumanzugs.</span></div>
-        <div><b>Licht</b><span>Versteckte Scheinwerfer und ein Rücklicht über die ganze Breite.</span></div>
-        <div><b>Lenkjoch</b><span>Steer-by-Wire ohne Lenksäule, dazu ein Touchscreen und zwei kleine Anzeigen.</span></div>
-        <div><b>Leichtbau</b><span>Magnesium, Titan und Kohlefaser. Fester Sitz und Handbedienung sparen Gewicht.</span></div>
-        <div><b>Zwei Sitze, höchstens</b><span>2017 waren noch vier versprochen. Der Rocket hat nur einen.</span></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="block">
-    <div class="wrap">
-      <p class="kicker reveal">Zeitleiste</p>
-      <h2 class="reveal">Neun Jahre Warten</h2>
-      <ol class="timeline" id="timeline">
-        <span class="bar" id="tl-bar"></span>
-        <li><div class="when">November 2017</div><div class="what">Erster Prototyp. Versprochen: 1,9 s, über 250 mph, 620 Meilen Reichweite, vier Sitze.</div></li>
-        <li><div class="when">2020</div><div class="what">Geplanter Produktionsstart. Er kommt nicht.</div></li>
-        <li><div class="when">2026</div><div class="what">Die Vorführung wird mehrmals verschoben: April, Ende April, August, 1. Oktober.</div></li>
-        <li><div class="when">15. Oktober 2026</div><div class="what">Enthüllung im Livestream, mit Stunts und Kickflip. Anzeige beim Start: 0,81 s.</div></li>
-        <li class="future"><div class="when">2028</div><div class="what">„2028, actually“: Produktion laut Musk. Ein Preis steht noch nicht fest.</div></li>
-      </ol>
-    </div>
-  </section>
-
-  <section class="block">
-    <div class="wrap">
-      <p class="kicker reveal">Reservieren</p>
-      <h2 class="reveal">Was es kostet, ist offen</h2>
-      <p class="intro reveal">Für die Performance-Version kann man wieder reservieren. Einen Kaufpreis nennt Tesla für keine Version.</p>
-      <div class="reserve">
-        <div class="reveal"><div class="v">5.000 $</div><span>sofort fällig, laut Tesla voll erstattbar</span></div>
-        <div class="reveal"><div class="v">+ 45.000 $</div><span>innerhalb von 10 Tagen, sonst verfällt die Reservierung</span></div>
-        <div class="reveal"><div class="v">? $</div><span>Endpreis unbekannt. Kritiker rechnen eher mit über einer Million.</span></div>
-      </div>
-    </div>
-  </section>
-</main>
-
-<footer>
-  <div class="wrap">
-    Fan-Seite, keine offizielle Seite von Tesla. Die Zeichnung ist frei nachempfunden. Schriften: Michroma und Inter, lokal eingebunden, SIL Open Font License (<a href="fonts/OFL-Michroma.txt">Lizenz</a>, <a href="fonts/OFL-Inter.txt">Lizenz</a>). Alle Leistungsdaten sind Angaben von Tesla, Stand 17. Oktober 2026.<br>
-    Quellen: <a href="https://electrek.co/2026/10/15/tesla-unveils-cyberfied-new-roadster-kickflip/" rel="noopener">Electrek, 15.10.2026</a> ·
-    <a href="https://www.cnbc.com/video/2026/10/16/tesla-unveils-its-next-generation-roadster-flying-car.html" rel="noopener">CNBC, 16.10.2026</a>
-  </div>
-</footer>
-
+<canvas id="milk"></canvas>
 <script>
-(() => {
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const $ = (id) => document.getElementById(id);
-  const clamp01 = (u) => Math.max(0, Math.min(1, u));
-  const easeInOut = (u) => u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
-  const easeOut = (u) => 1 - Math.pow(1 - u, 3);
-  const lerp = (a, b, u) => a + (b - a) * u;
-  const fmt = (v, d) => v.toFixed(d).replace(".", ",");
+'use strict';
 
-  /* ---------- Partikel (Düsen-Dampf, Staub, Funken) ---------- */
-  function particles(canvas) {
-    const ctx = canvas.getContext("2d");
-    const P = { ctx, list: [], W: 0, H: 0 };
-    P.size = () => {
-      const r = canvas.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
-      P.W = r.width; P.H = r.height; canvas.width = r.width * dpr; canvas.height = r.height * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
-    P.puff = (x, y, vx, vy, opt = {}) => P.list.push({ x, y, vx, vy, r: opt.r || 6, grow: opt.grow || 0.5, life: 1, decay: opt.decay || 0.025, color: opt.color || "220,240,255", drag: opt.drag || 0.95, g: opt.g || 0 });
-    P.step = (dt) => {
-      ctx.clearRect(0, 0, P.W, P.H);
-      const k = dt / 16;
-      P.list = P.list.filter((p) => p.life > 0);
-      for (const p of P.list) {
-        p.vx *= Math.pow(p.drag, k); p.vy = p.vy * Math.pow(p.drag, k) + p.g * k;
-        p.x += p.vx * k; p.y += p.vy * k; p.r += p.grow * k; p.life -= p.decay * k;
-        const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
-        g.addColorStop(0, `rgba(${p.color},${0.55 * p.life})`); g.addColorStop(1, `rgba(${p.color},0)`);
-        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
-      }
-    };
-    P.size();
-    return P;
-  }
+// Milk pour: a 2D Navier-Stokes fluid simulation (stable fluids on the GPU).
+// The "dye" field is milk thickness; it is rendered as a glossy liquid surface.
 
-  // Punkt im Auto (Koordinaten der Zeichnung 1000×300) auf den Bildschirm umrechnen
-  function carPoint(el, s, px, py) {
-    const w = el.offsetWidth, h = w * 0.3;
-    let lx = (px / 1000 - 0.5) * w * s.sc, ly = (py / 300 - 0.5) * h * s.sc * s.flip;
-    const c = Math.cos(s.rot), n = Math.sin(s.rot);
-    return [s.cx + lx * c - ly * n, s.cy + lx * n + ly * c];
-  }
+const canvas = document.getElementById('milk');
+const DPR = Math.min(window.devicePixelRatio || 1, 2);
+const isSmall = Math.min(window.innerWidth, window.innerHeight) < 600;
 
-  /* ---------- Sterne ---------- */
-  const stars = $("stars"), sctx = stars.getContext("2d");
-  let starList = [];
-  function sizeStars() {
-    const r = stars.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
-    stars.width = r.width * dpr; stars.height = r.height * dpr; sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    starList = Array.from({ length: Math.round(r.width * r.height / 5000) }, () => ({ x: Math.random() * r.width, y: Math.random() * r.height * 0.55, r: Math.random() * 1.2 + .2, a: Math.random() }));
-    sctx.clearRect(0, 0, r.width, r.height);
-    for (const s of starList) { sctx.globalAlpha = 0.2 + s.a * 0.6; sctx.fillStyle = "#fff"; sctx.beginPath(); sctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); sctx.fill(); }
-  }
-  sizeStars();
+const config = {
+  SIM_RES: 128,
+  DYE_RES: isSmall ? 640 : 1024,
+  PRESSURE_ITERATIONS: 20,
+  PRESSURE: 0.8,
+  CURL: 10,
+  VELOCITY_DISSIPATION: 0.22,
+};
 
-  /* ---------- Hero: das Auto fliegt ins Bild ----------
-     Es kommt klein von links oben aus dem Himmel, Düsen an, schwingt herein,
-     macht einen Kickflip, bremst mit den Düsen unten und landet. */
-  const hero = $("hero"), car = $("hero-car"), shadow = $("shadow"), fx = particles($("fx"));
-  const FLY = 3200;
-  function heroState(t) {
-    const W = hero.clientWidth, H = hero.clientHeight;
-    const baseX = W / 2, baseY = H * 0.66;
-    // Flugbahn als Bézier: Start oben links weit weg, Bogen über der Bühne, Landung in der Mitte
-    const u = easeInOut(clamp01(t / 2500));
-    const p0 = [-W * 0.75, -H * 0.55], p1 = [-W * 0.1, -H * 0.75], p2 = [W * 0.35, -H * 0.35], p3 = [0, 0];
-    const b = (i) => Math.pow(1 - u, 3) * p0[i] + 3 * Math.pow(1 - u, 2) * u * p1[i] + 3 * (1 - u) * u * u * p2[i] + u * u * u * p3[i];
-    let sc = lerp(0.18, 1, easeOut(clamp01(t / 2300)));
-    // Kickflip: einmal um die Längsachse (Höhe wird zu cos des Winkels)
-    const fu = clamp01((t - 1150) / 750);
-    const flip = Math.cos(easeInOut(fu) * Math.PI * 2);
-    let rot = lerp(-0.35, 0, easeOut(clamp01(t / 2200))) + Math.sin(fu * Math.PI) * 0.12;
-    // Landung: kurzes Einfedern
-    let squash = 1;
-    if (t > 2500) { const l = (t - 2500) / 500; squash = 1 - 0.06 * Math.sin(Math.min(1, l) * Math.PI) * (1 - Math.min(1, l)); }
-    return { cx: baseX + b(0), cy: baseY + b(1), sc, rot, flip: flip * squash, landed: t >= 2500 };
-  }
-  function applyHero(s) {
-    const W = hero.clientWidth, H = hero.clientHeight;
-    car.style.transform = `translate(${s.cx - W / 2}px, ${s.cy - H * 0.66}px) translate(-50%, -50%) rotate(${s.rot}rad) scale(${s.sc}, ${s.sc * s.flip})`;
-    const air = clamp01(1 - (s.cy - (H * 0.66 - H * 0.4)) / (H * 0.4));
-    shadow.style.opacity = s.sc > 0.5 ? String(0.9 * (1 - air) * s.sc) : "0";
-    shadow.style.transform = `translate(calc(-50% + ${s.cx - W / 2}px), -50%) scale(${0.3 + 0.7 * (1 - air) * s.sc})`;
-  }
+resizeCanvas();
+const context = getWebGLContext(canvas);
+if (!context) {
+  document.body.classList.add('no-webgl');
+} else {
+  run(context.gl, context.ext);
+}
 
-  let start = 0, last = 0, landedOnce = false;
-  function heroFrame(now) {
-    if (!start) start = last = now;
-    const t = now - start, dt = Math.min(50, now - last); last = now;
-    const s = heroState(t);
-    if (t < FLY) applyHero(s);
-    // Düsen-Dampf hinten während des Flugs
-    if (t < 2400) {
-      const [nx, ny] = carPoint(car, s, 38, 186);
-      const dir = [-Math.cos(s.rot), -Math.sin(s.rot)];
-      for (let i = 0; i < 3; i++) fx.puff(nx, ny, dir[0] * (6 + Math.random() * 6) * s.sc + (Math.random() - .5) * 2, dir[1] * 6 * s.sc + (Math.random() - .5) * 2, { r: 4 * s.sc + 2, grow: 0.9 * s.sc, decay: 0.03 });
-    }
-    // Bremsdüsen unten kurz vor der Landung
-    if (t > 1900 && t < 2550) {
-      for (const px of [180, 500, 820]) {
-        const [x, y] = carPoint(car, s, px, 228);
-        fx.puff(x, y, (Math.random() - .5) * 3, 5 + Math.random() * 4, { r: 6, grow: 1.4, decay: 0.035, drag: 0.9 });
-      }
-    }
-    if (s.landed && !landedOnce) {
-      landedOnce = true;
-      hero.classList.add("landed", "shake");
-      setTimeout(() => hero.classList.remove("shake"), 520);
-      // Staubwolke und Funken zu beiden Seiten
-      for (let i = 0; i < 70; i++) {
-        const side = i % 2 ? 1 : -1, [x, y] = carPoint(car, s, side > 0 ? 780 : 215, 260);
-        fx.puff(x, y, side * (3 + Math.random() * 12), -Math.random() * 3, { r: 8, grow: 1.6, decay: 0.012 + Math.random() * .01, drag: 0.93, color: "170,180,195" });
-      }
-      for (let i = 0; i < 40; i++) {
-        const [x, y] = carPoint(car, s, 300 + Math.random() * 400, 260);
-        fx.puff(x, y, (Math.random() - .5) * 22, -4 - Math.random() * 10, { r: 1.6, grow: 0, decay: 0.02, drag: 0.98, g: 0.5, color: "255,190,120" });
-      }
-      countLive();
-    }
-    fx.step(dt);
-    if (t < FLY || fx.list.length) requestAnimationFrame(heroFrame);
+function resizeCanvas() {
+  const w = Math.floor(canvas.clientWidth * DPR);
+  const h = Math.floor(canvas.clientHeight * DPR);
+  if (canvas.width !== w || canvas.height !== h) {
+    canvas.width = w;
+    canvas.height = h;
+    return true;
   }
-  function countLive() {
-    const el = $("live"), t0 = performance.now();
-    const step = (now) => {
-      const u = clamp01((now - t0) / 1400);
-      el.textContent = fmt(0.81 * easeOut(u), 2) + " s";
-      if (u < 1) requestAnimationFrame(step);
-    };
-    setTimeout(() => requestAnimationFrame(step), 1000);
-  }
-  if (reduceMotion) {
-    applyHero(heroState(FLY)); hero.classList.add("landed"); $("live").textContent = "0,81 s";
+  return false;
+}
+
+function getWebGLContext(canvas) {
+  const params = { alpha: false, depth: false, stencil: false, antialias: false, preserveDrawingBuffer: false, powerPreference: 'high-performance' };
+  let gl = canvas.getContext('webgl2', params);
+  const isWebGL2 = !!gl;
+  if (!isWebGL2) gl = canvas.getContext('webgl', params) || canvas.getContext('experimental-webgl', params);
+  if (!gl) return null;
+
+  let halfFloat, linear;
+  if (isWebGL2) {
+    gl.getExtension('EXT_color_buffer_float');
+    linear = true;
   } else {
-    applyHero(heroState(0));
-    requestAnimationFrame(heroFrame);
+    halfFloat = gl.getExtension('OES_texture_half_float');
+    linear = !!gl.getExtension('OES_texture_half_float_linear');
+    if (!halfFloat) return null;
+  }
+  const type = isWebGL2 ? gl.HALF_FLOAT : halfFloat.HALF_FLOAT_OES;
+
+  let rg, r;
+  if (isWebGL2) {
+    rg = getSupportedFormat(gl, gl.RG16F, gl.RG, type);
+    r = getSupportedFormat(gl, gl.R16F, gl.RED, type);
+  } else {
+    rg = r = getSupportedFormat(gl, gl.RGBA, gl.RGBA, type);
+  }
+  if (!rg || !r) return null;
+  return { gl, ext: { type, rg, r, linear } };
+}
+
+function getSupportedFormat(gl, internalFormat, format, type) {
+  if (!supportRenderTextureFormat(gl, internalFormat, format, type)) {
+    if (internalFormat === gl.R16F) return getSupportedFormat(gl, gl.RG16F, gl.RG, type);
+    if (internalFormat === gl.RG16F) return getSupportedFormat(gl, gl.RGBA16F, gl.RGBA, type);
+    return null;
+  }
+  return { internalFormat, format };
+}
+
+function supportRenderTextureFormat(gl, internalFormat, format, type) {
+  const texture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, 4, 4, 0, format, type, null);
+  const fbo = gl.createFramebuffer();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+  const ok = gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  gl.deleteFramebuffer(fbo);
+  gl.deleteTexture(texture);
+  return ok;
+}
+
+function run(gl, ext) {
+  // ---------- shaders ----------
+  const baseVertex = `
+    precision highp float;
+    attribute vec2 aPosition;
+    varying vec2 vUv, vL, vR, vT, vB;
+    uniform vec2 texelSize;
+    void main () {
+      vUv = aPosition * 0.5 + 0.5;
+      vL = vUv - vec2(texelSize.x, 0.0);
+      vR = vUv + vec2(texelSize.x, 0.0);
+      vT = vUv + vec2(0.0, texelSize.y);
+      vB = vUv - vec2(0.0, texelSize.y);
+      gl_Position = vec4(aPosition, 0.0, 1.0);
+    }`;
+
+  const copyShader = `
+    precision mediump float;
+    varying vec2 vUv;
+    uniform sampler2D uTexture;
+    void main () { gl_FragColor = texture2D(uTexture, vUv); }`;
+
+  const clearShader = `
+    precision mediump float;
+    varying vec2 vUv;
+    uniform sampler2D uTexture;
+    uniform float value;
+    void main () { gl_FragColor = value * texture2D(uTexture, vUv); }`;
+
+  const splatShader = `
+    precision highp float;
+    varying vec2 vUv;
+    uniform sampler2D uTarget;
+    uniform vec2 scale;
+    uniform vec3 color;
+    uniform vec2 point;
+    uniform float radius;
+    void main () {
+      vec2 p = (vUv - point) * scale;
+      vec3 splat = exp(-dot(p, p) / radius) * color;
+      gl_FragColor = vec4(texture2D(uTarget, vUv).xyz + splat, 1.0);
+    }`;
+
+  // a droplet in flight, stretched along its direction of motion (drawn additively)
+  const dropShader = `
+    precision highp float;
+    varying vec2 vUv;
+    uniform vec2 scale;
+    uniform vec2 point;
+    uniform vec2 dir;
+    uniform float radius;
+    uniform float stretch;
+    uniform float amount;
+    void main () {
+      vec2 p = (vUv - point) * scale;
+      float a = dot(p, dir) / stretch;
+      float b = dot(p, vec2(-dir.y, dir.x));
+      gl_FragColor = vec4(exp(-(a * a + b * b) / radius) * amount, 0.0, 0.0, 1.0);
+    }`;
+
+  const advectionShader = `
+    precision highp float;
+    varying vec2 vUv;
+    uniform sampler2D uVelocity;
+    uniform sampler2D uSource;
+    uniform vec2 texelSize;
+    uniform vec2 dyeTexelSize;
+    uniform float dt;
+    uniform float dissipation;
+    vec4 bilerp (sampler2D sam, vec2 uv, vec2 tsize) {
+      vec2 st = uv / tsize - 0.5;
+      vec2 iuv = floor(st);
+      vec2 fuv = fract(st);
+      vec4 a = texture2D(sam, (iuv + vec2(0.5, 0.5)) * tsize);
+      vec4 b = texture2D(sam, (iuv + vec2(1.5, 0.5)) * tsize);
+      vec4 c = texture2D(sam, (iuv + vec2(0.5, 1.5)) * tsize);
+      vec4 d = texture2D(sam, (iuv + vec2(1.5, 1.5)) * tsize);
+      return mix(mix(a, b, fuv.x), mix(c, d, fuv.x), fuv.y);
+    }
+    void main () {
+    #ifdef MANUAL_FILTERING
+      vec2 coord = vUv - dt * bilerp(uVelocity, vUv, texelSize).xy * texelSize;
+      vec4 result = bilerp(uSource, coord, dyeTexelSize);
+    #else
+      vec2 coord = vUv - dt * texture2D(uVelocity, vUv).xy * texelSize;
+      vec4 result = texture2D(uSource, coord);
+    #endif
+      gl_FragColor = result / (1.0 + dissipation * dt);
+    }`;
+
+  const divergenceShader = `
+    precision mediump float;
+    varying vec2 vUv, vL, vR, vT, vB;
+    uniform sampler2D uVelocity;
+    void main () {
+      float L = texture2D(uVelocity, vL).x;
+      float R = texture2D(uVelocity, vR).x;
+      float T = texture2D(uVelocity, vT).y;
+      float B = texture2D(uVelocity, vB).y;
+      vec2 C = texture2D(uVelocity, vUv).xy;
+      if (vL.x < 0.0) { L = -C.x; }
+      if (vR.x > 1.0) { R = -C.x; }
+      if (vT.y > 1.0) { T = -C.y; }
+      if (vB.y < 0.0) { B = -C.y; }
+      gl_FragColor = vec4(0.5 * (R - L + T - B), 0.0, 0.0, 1.0);
+    }`;
+
+  const curlShader = `
+    precision mediump float;
+    varying vec2 vUv, vL, vR, vT, vB;
+    uniform sampler2D uVelocity;
+    void main () {
+      float L = texture2D(uVelocity, vL).y;
+      float R = texture2D(uVelocity, vR).y;
+      float T = texture2D(uVelocity, vT).x;
+      float B = texture2D(uVelocity, vB).x;
+      gl_FragColor = vec4(0.5 * (R - L - T + B), 0.0, 0.0, 1.0);
+    }`;
+
+  const vorticityShader = `
+    precision highp float;
+    varying vec2 vUv, vL, vR, vT, vB;
+    uniform sampler2D uVelocity;
+    uniform sampler2D uCurl;
+    uniform float curl;
+    uniform float dt;
+    void main () {
+      float L = texture2D(uCurl, vL).x;
+      float R = texture2D(uCurl, vR).x;
+      float T = texture2D(uCurl, vT).x;
+      float B = texture2D(uCurl, vB).x;
+      float C = texture2D(uCurl, vUv).x;
+      vec2 force = 0.5 * vec2(abs(T) - abs(B), abs(R) - abs(L));
+      force /= length(force) + 0.0001;
+      force *= curl * C;
+      force.y *= -1.0;
+      vec2 vel = texture2D(uVelocity, vUv).xy + force * dt;
+      gl_FragColor = vec4(clamp(vel, -1000.0, 1000.0), 0.0, 1.0);
+    }`;
+
+  // Milk is heavier than the "air" around it: thickness pulls the flow downwards.
+  const gravityShader = `
+    precision highp float;
+    varying vec2 vUv;
+    uniform sampler2D uVelocity;
+    uniform sampler2D uDye;
+    uniform float gravity;
+    uniform float dt;
+    void main () {
+      vec2 vel = texture2D(uVelocity, vUv).xy;
+      float d = clamp(texture2D(uDye, vUv).x, 0.0, 1.4);
+      vel.y -= gravity * d * dt;
+      gl_FragColor = vec4(vel, 0.0, 1.0);
+    }`;
+
+  const pressureShader = `
+    precision mediump float;
+    varying vec2 vUv, vL, vR, vT, vB;
+    uniform sampler2D uPressure;
+    uniform sampler2D uDivergence;
+    void main () {
+      float L = texture2D(uPressure, vL).x;
+      float R = texture2D(uPressure, vR).x;
+      float T = texture2D(uPressure, vT).x;
+      float B = texture2D(uPressure, vB).x;
+      float div = texture2D(uDivergence, vUv).x;
+      gl_FragColor = vec4((L + R + B + T - div) * 0.25, 0.0, 0.0, 1.0);
+    }`;
+
+  const gradientSubtractShader = `
+    precision mediump float;
+    varying vec2 vUv, vL, vR, vT, vB;
+    uniform sampler2D uPressure;
+    uniform sampler2D uVelocity;
+    void main () {
+      float L = texture2D(uPressure, vL).x;
+      float R = texture2D(uPressure, vR).x;
+      float T = texture2D(uPressure, vT).x;
+      float B = texture2D(uPressure, vB).x;
+      vec2 vel = texture2D(uVelocity, vUv).xy - vec2(R - L, T - B);
+      gl_FragColor = vec4(vel, 0.0, 1.0);
+    }`;
+
+  // Wetting: milk creeps outward along its own edge with a noisy, organic front,
+  // and over-thick spots slowly relax back to a level surface.
+  const spreadShader = `
+    precision highp float;
+    varying vec2 vUv;
+    uniform sampler2D uSource;
+    uniform vec2 texelSize;
+    uniform float amount;
+    uniform float reach;
+    uniform float relax;
+    uniform float time;
+    uniform float aspect;
+    float hash (vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+    float noise (vec2 p) {
+      vec2 i = floor(p), f = fract(p);
+      f = f * f * (3.0 - 2.0 * f);
+      return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
+                 mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y);
+    }
+    void main () {
+      vec2 o = texelSize * 1.6;
+      float c = texture2D(uSource, vUv).x;
+      float m = max(max(texture2D(uSource, vUv + vec2(o.x, 0.0)).x, texture2D(uSource, vUv - vec2(o.x, 0.0)).x),
+                    max(texture2D(uSource, vUv + vec2(0.0, o.y)).x, texture2D(uSource, vUv - vec2(0.0, o.y)).x));
+      vec2 k = o * 0.7071;
+      m = max(m, max(max(texture2D(uSource, vUv + k).x, texture2D(uSource, vUv - k).x),
+                     max(texture2D(uSource, vUv + vec2(k.x, -k.y)).x, texture2D(uSource, vUv + vec2(-k.x, k.y)).x)));
+      vec2 p = vUv * vec2(aspect, 1.0);
+      float n = noise(p * 7.0 + vec2(time * 0.21, -time * 0.17)) * 0.65 + noise(p * 23.0 - time * 0.4) * 0.35;
+      float grown = m * (reach + (1.0 - reach) * n);
+      float d = c + max(grown - c, 0.0) * amount * (0.35 + 0.65 * n);
+      d -= max(d - 1.0, 0.0) * relax;
+      gl_FragColor = vec4(clamp(d, 0.0, 2.0), 0.0, 0.0, 1.0);
+    }`;
+
+  const displayShader = `
+    precision highp float;
+    varying vec2 vUv;
+    uniform sampler2D uDye;
+    uniform sampler2D uFly;
+    uniform sampler2D uVelocity;
+    uniform vec2 dyeTexel;
+    uniform vec2 resolution;
+    uniform vec2 shake;
+    uniform float time;
+    float H (vec2 uv) {
+      // thick milk levels out: compress the height so only edges and real waves catch light
+      float d = smoothstep(0.0, 1.25, max(texture2D(uDye, uv).x, texture2D(uFly, uv).x)) * 1.25;
+      vec2 v = texture2D(uVelocity, uv).xy;
+      return d + length(v) * 0.0007;
+    }
+    float hash (vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+    void main () {
+      float aspect = resolution.x / resolution.y;
+      vec2 uv = vUv + shake;
+      vec2 e = dyeTexel * 1.75;
+      float c = max(texture2D(uDye, uv).x, texture2D(uFly, uv).x);
+      float hl = H(uv - vec2(e.x, 0.0));
+      float hr = H(uv + vec2(e.x, 0.0));
+      float hb = H(uv - vec2(0.0, e.y));
+      float ht = H(uv + vec2(0.0, e.y));
+      vec3 n = normalize(vec3((hl - hr) * 2.6, (hb - ht) * 2.6, 1.0));
+
+      // dark table underneath, with a soft contact shadow cast by the milk
+      vec2 q = uv - 0.5;
+      q.x *= aspect;
+      vec3 bg = mix(vec3(0.075, 0.08, 0.098), vec3(0.016, 0.017, 0.022), smoothstep(0.05, 0.95, length(q)));
+      float sh = texture2D(uDye, uv + vec2(0.006 / aspect, 0.011)).x;
+      bg *= 1.0 - 0.6 * smoothstep(0.04, 0.7, sh);
+      bg += (hash(vUv * resolution + fract(time) * 91.0) - 0.5) * 0.014;
+
+      // milk surface
+      float cover = smoothstep(0.1, 0.3, c);
+      float thick = smoothstep(0.12, 1.0, c);
+      vec3 base = mix(vec3(0.74, 0.79, 0.86), vec3(0.985, 0.978, 0.955), thick);
+      vec3 L = normalize(vec3(-0.45, 0.6, 0.66));
+      vec3 V = vec3(0.0, 0.0, 1.0);
+      float dif = clamp(dot(n, L), 0.0, 1.0);
+      vec3 col = base * (0.6 + 0.48 * dif);
+      // creamy subsurface glow in the thin rim
+      col += vec3(0.05, 0.06, 0.08) * (1.0 - thick) * cover;
+      // highlights: key light plus a broad soft window reflection
+      vec3 Hv = normalize(L + V);
+      float spec = pow(max(dot(n, Hv), 0.0), 120.0) * 1.1;
+      vec3 R = reflect(-V, n);
+      float win = smoothstep(0.18, 0.42, dot(R.xy, normalize(vec2(-0.5, 0.75))));
+      float fres = pow(1.0 - n.z, 1.4);
+      col += spec + win * 0.22 + fres * vec3(0.18, 0.2, 0.24);
+      // occlusion in the troughs
+      col *= 1.0 - 0.18 * clamp((1.0 - n.z) * 3.0, 0.0, 1.0) * (1.0 - dif);
+
+      vec3 color = mix(bg, col, cover);
+      gl_FragColor = vec4(color, 1.0);
+    }`;
+
+  // ---------- GL plumbing ----------
+  function compile(type, source, keywords) {
+    if (keywords) source = keywords.map(k => '#define ' + k + '\n').join('') + source;
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(shader));
+    return shader;
   }
 
-  /* ---------- Einblenden beim Scrollen ---------- */
-  const io = new IntersectionObserver((es) => es.forEach((e) => {
-    if (!e.isIntersecting) return;
-    e.target.classList.add("in");
-    e.target.querySelectorAll(".count").forEach(countUp);
-    e.target.querySelectorAll(".gauge i").forEach((g) => (g.style.width = getComputedStyle(g).getPropertyValue("--w")));
-    io.unobserve(e.target);
-  }), { threshold: 0.2 });
-  document.querySelectorAll(".reveal").forEach((el, i) => { el.style.transitionDelay = (i % 3) * 90 + "ms"; io.observe(el); });
+  const vertexShader = compile(gl.VERTEX_SHADER, baseVertex);
 
-  function countUp(el) {
-    const to = parseFloat(el.dataset.to), dec = +el.dataset.dec, plain = "plain" in el.dataset, t0 = performance.now();
-    const step = (now) => {
-      const u = reduceMotion ? 1 : clamp01((now - t0) / 1600);
-      const v = to * easeOut(u);
-      el.textContent = plain ? String(Math.round(v)) : fmt(v, dec).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-      if (u < 1) requestAnimationFrame(step);
+  function program(fragmentSource, keywords) {
+    const p = gl.createProgram();
+    gl.attachShader(p, vertexShader);
+    gl.attachShader(p, compile(gl.FRAGMENT_SHADER, fragmentSource, keywords));
+    gl.bindAttribLocation(p, 0, 'aPosition');
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) console.error(gl.getProgramInfoLog(p));
+    const uniforms = {};
+    const count = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS);
+    for (let i = 0; i < count; i++) {
+      const name = gl.getActiveUniform(p, i).name;
+      uniforms[name] = gl.getUniformLocation(p, name);
+    }
+    return { u: uniforms, bind() { gl.useProgram(p); } };
+  }
+
+  const copyProgram = program(copyShader);
+  const clearProgram = program(clearShader);
+  const splatProgram = program(splatShader);
+  const dropProgram = program(dropShader);
+  const advectionProgram = program(advectionShader, ext.linear ? null : ['MANUAL_FILTERING']);
+  const divergenceProgram = program(divergenceShader);
+  const curlProgram = program(curlShader);
+  const vorticityProgram = program(vorticityShader);
+  const gravityProgram = program(gravityShader);
+  const pressureProgram = program(pressureShader);
+  const gradientProgram = program(gradientSubtractShader);
+  const spreadProgram = program(spreadShader);
+  const displayProgram = program(displayShader);
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, -1, 1, 1, 1, 1, -1]), gl.STATIC_DRAW);
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer());
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array([0, 1, 2, 0, 2, 3]), gl.STATIC_DRAW);
+  gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+  gl.enableVertexAttribArray(0);
+
+  function blit(target) {
+    if (target == null) {
+      gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    } else {
+      gl.viewport(0, 0, target.width, target.height);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, target.fbo);
+    }
+    gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
+  }
+
+  function createFBO(w, h, fmt, filter) {
+    gl.activeTexture(gl.TEXTURE0);
+    const texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, filter);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, filter);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texImage2D(gl.TEXTURE_2D, 0, fmt.internalFormat, w, h, 0, fmt.format, ext.type, null);
+    const fbo = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+    gl.viewport(0, 0, w, h);
+    gl.clearColor(0, 0, 0, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    return {
+      texture, fbo, width: w, height: h, texelSizeX: 1 / w, texelSizeY: 1 / h,
+      attach(id) {
+        gl.activeTexture(gl.TEXTURE0 + id);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        return id;
+      },
     };
-    requestAnimationFrame(step);
   }
 
-  /* ---------- Drag-Rennen ---------- */
-  const lanes = [...document.querySelectorAll(".lane")];
-  const SLOW = 2;
-  let raceRaf = 0;
-  function race() {
-    cancelAnimationFrame(raceRaf);
-    lanes.forEach((l) => l.classList.remove("won"));
-    let t0 = 0;
-    const step = (now) => {
-      if (!t0) t0 = now + 500; // kurz Luft holen
-      const t = Math.max(0, (now - t0) / 1000 / SLOW);
-      let running = false;
-      for (const l of lanes) {
-        const T = +l.dataset.t, u = clamp01(t / T);
-        const track = l.querySelector(".track"), mini = l.querySelector(".mini");
-        const x = u * u * (track.clientWidth - mini.offsetWidth); // gleichmäßig beschleunigt
-        mini.style.transform = `translate(${x}px, -50%)`;
-        l.querySelector(".trail").style.width = Math.max(0, x) + "px";
-        l.querySelector(".time").textContent = fmt(Math.min(t, T), 2);
-        if (u < 1) running = true; else if (!l.classList.contains("won")) l.classList.add("won");
+  function createDoubleFBO(w, h, fmt, filter) {
+    let a = createFBO(w, h, fmt, filter);
+    let b = createFBO(w, h, fmt, filter);
+    return {
+      width: w, height: h, texelSizeX: 1 / w, texelSizeY: 1 / h,
+      get read() { return a; },
+      set read(v) { a = v; },
+      get write() { return b; },
+      set write(v) { b = v; },
+      swap() { const t = a; a = b; b = t; },
+    };
+  }
+
+  function resizeFBO(target, w, h, fmt, filter) {
+    const next = createFBO(w, h, fmt, filter);
+    copyProgram.bind();
+    gl.uniform2f(copyProgram.u.texelSize, 1 / w, 1 / h);
+    gl.uniform1i(copyProgram.u.uTexture, target.attach(0));
+    blit(next);
+    return next;
+  }
+
+  function resizeDoubleFBO(target, w, h, fmt, filter) {
+    if (target.width === w && target.height === h) return target;
+    target.read = resizeFBO(target.read, w, h, fmt, filter);
+    target.write = createFBO(w, h, fmt, filter);
+    target.width = w; target.height = h;
+    target.texelSizeX = 1 / w; target.texelSizeY = 1 / h;
+    return target;
+  }
+
+  function getResolution(res) {
+    let aspect = gl.drawingBufferWidth / gl.drawingBufferHeight;
+    if (aspect < 1) aspect = 1 / aspect;
+    const min = Math.round(res);
+    const max = Math.round(res * aspect);
+    return gl.drawingBufferWidth > gl.drawingBufferHeight ? { width: max, height: min } : { width: min, height: max };
+  }
+
+  let dye, fly, velocity, divergence, curl, pressure;
+  function initFramebuffers() {
+    const sim = getResolution(config.SIM_RES);
+    const dyeRes = getResolution(config.DYE_RES);
+    const filter = ext.linear ? gl.LINEAR : gl.NEAREST;
+    gl.disable(gl.BLEND);
+    if (!dye) dye = createDoubleFBO(dyeRes.width, dyeRes.height, ext.r, filter);
+    else dye = resizeDoubleFBO(dye, dyeRes.width, dyeRes.height, ext.r, filter);
+    fly = createFBO(dyeRes.width, dyeRes.height, ext.r, filter);
+    if (!velocity) velocity = createDoubleFBO(sim.width, sim.height, ext.rg, filter);
+    else velocity = resizeDoubleFBO(velocity, sim.width, sim.height, ext.rg, filter);
+    divergence = createFBO(sim.width, sim.height, ext.r, gl.NEAREST);
+    curl = createFBO(sim.width, sim.height, ext.r, gl.NEAREST);
+    pressure = createDoubleFBO(sim.width, sim.height, ext.r, gl.NEAREST);
+  }
+  initFramebuffers();
+
+  // ---------- simulation ----------
+  function splatScale() {
+    const a = canvas.width / canvas.height;
+    return a > 1 ? [a, 1] : [1, 1 / a];
+  }
+
+  // x, y in uv (0..1, y up); dx, dy in sim texels per second; amount = milk thickness added
+  function splat(x, y, dx, dy, amount, radius) {
+    const s = splatScale();
+    splatProgram.bind();
+    gl.uniform2f(splatProgram.u.texelSize, velocity.texelSizeX, velocity.texelSizeY);
+    gl.uniform2f(splatProgram.u.scale, s[0], s[1]);
+    gl.uniform2f(splatProgram.u.point, x, y);
+    gl.uniform1f(splatProgram.u.radius, radius);
+    gl.uniform1i(splatProgram.u.uTarget, velocity.read.attach(0));
+    gl.uniform3f(splatProgram.u.color, dx, dy, 0);
+    blit(velocity.write);
+    velocity.swap();
+    if (amount !== 0) stamp(dye.read, x, y, 1, 0, radius, 1, amount);
+  }
+
+  // Additive gaussian drawn only inside its bounding box, so hundreds per frame stay cheap.
+  function stamp(target, x, y, dirX, dirY, radius, stretch, amount) {
+    const s = splatScale();
+    const extent = 3 * Math.sqrt(radius) * stretch;
+    const x0 = Math.floor((x - extent / s[0]) * target.width), x1 = Math.ceil((x + extent / s[0]) * target.width);
+    const y0 = Math.floor((y - extent / s[1]) * target.height), y1 = Math.ceil((y + extent / s[1]) * target.height);
+    if (x1 < 0 || y1 < 0 || x0 > target.width || y0 > target.height) return;
+    dropProgram.bind();
+    gl.uniform2f(dropProgram.u.texelSize, target.texelSizeX, target.texelSizeY);
+    gl.uniform2f(dropProgram.u.scale, s[0], s[1]);
+    gl.uniform2f(dropProgram.u.point, x, y);
+    gl.uniform2f(dropProgram.u.dir, dirX, dirY);
+    gl.uniform1f(dropProgram.u.radius, radius);
+    gl.uniform1f(dropProgram.u.stretch, stretch);
+    gl.uniform1f(dropProgram.u.amount, amount);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, target.fbo);
+    gl.viewport(0, 0, target.width, target.height);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.ONE, gl.ONE);
+    gl.enable(gl.SCISSOR_TEST);
+    gl.scissor(x0, y0, x1 - x0, y1 - y0);
+    gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
+    gl.disable(gl.SCISSOR_TEST);
+    gl.disable(gl.BLEND);
+  }
+
+  function step(dt, p) {
+    gl.disable(gl.BLEND);
+
+    curlProgram.bind();
+    gl.uniform2f(curlProgram.u.texelSize, velocity.texelSizeX, velocity.texelSizeY);
+    gl.uniform1i(curlProgram.u.uVelocity, velocity.read.attach(0));
+    blit(curl);
+
+    vorticityProgram.bind();
+    gl.uniform2f(vorticityProgram.u.texelSize, velocity.texelSizeX, velocity.texelSizeY);
+    gl.uniform1i(vorticityProgram.u.uVelocity, velocity.read.attach(0));
+    gl.uniform1i(vorticityProgram.u.uCurl, curl.attach(1));
+    gl.uniform1f(vorticityProgram.u.curl, config.CURL);
+    gl.uniform1f(vorticityProgram.u.dt, dt);
+    blit(velocity.write);
+    velocity.swap();
+
+    if (p.gravity > 0) {
+      gravityProgram.bind();
+      gl.uniform2f(gravityProgram.u.texelSize, velocity.texelSizeX, velocity.texelSizeY);
+      gl.uniform1i(gravityProgram.u.uVelocity, velocity.read.attach(0));
+      gl.uniform1i(gravityProgram.u.uDye, dye.read.attach(1));
+      gl.uniform1f(gravityProgram.u.gravity, p.gravity);
+      gl.uniform1f(gravityProgram.u.dt, dt);
+      blit(velocity.write);
+      velocity.swap();
+    }
+
+    divergenceProgram.bind();
+    gl.uniform2f(divergenceProgram.u.texelSize, velocity.texelSizeX, velocity.texelSizeY);
+    gl.uniform1i(divergenceProgram.u.uVelocity, velocity.read.attach(0));
+    blit(divergence);
+
+    clearProgram.bind();
+    gl.uniform1i(clearProgram.u.uTexture, pressure.read.attach(0));
+    gl.uniform1f(clearProgram.u.value, config.PRESSURE);
+    blit(pressure.write);
+    pressure.swap();
+
+    pressureProgram.bind();
+    gl.uniform2f(pressureProgram.u.texelSize, velocity.texelSizeX, velocity.texelSizeY);
+    gl.uniform1i(pressureProgram.u.uDivergence, divergence.attach(0));
+    for (let i = 0; i < config.PRESSURE_ITERATIONS; i++) {
+      gl.uniform1i(pressureProgram.u.uPressure, pressure.read.attach(1));
+      blit(pressure.write);
+      pressure.swap();
+    }
+
+    gradientProgram.bind();
+    gl.uniform2f(gradientProgram.u.texelSize, velocity.texelSizeX, velocity.texelSizeY);
+    gl.uniform1i(gradientProgram.u.uPressure, pressure.read.attach(0));
+    gl.uniform1i(gradientProgram.u.uVelocity, velocity.read.attach(1));
+    blit(velocity.write);
+    velocity.swap();
+
+    advectionProgram.bind();
+    gl.uniform2f(advectionProgram.u.texelSize, velocity.texelSizeX, velocity.texelSizeY);
+    if (!ext.linear) gl.uniform2f(advectionProgram.u.dyeTexelSize, velocity.texelSizeX, velocity.texelSizeY);
+    const velocityId = velocity.read.attach(0);
+    gl.uniform1i(advectionProgram.u.uVelocity, velocityId);
+    gl.uniform1i(advectionProgram.u.uSource, velocityId);
+    gl.uniform1f(advectionProgram.u.dt, dt);
+    gl.uniform1f(advectionProgram.u.dissipation, config.VELOCITY_DISSIPATION);
+    blit(velocity.write);
+    velocity.swap();
+
+    if (!ext.linear) gl.uniform2f(advectionProgram.u.dyeTexelSize, dye.texelSizeX, dye.texelSizeY);
+    gl.uniform1i(advectionProgram.u.uVelocity, velocity.read.attach(0));
+    gl.uniform1i(advectionProgram.u.uSource, dye.read.attach(1));
+    gl.uniform1f(advectionProgram.u.dissipation, 0);
+    blit(dye.write);
+    dye.swap();
+
+    spreadProgram.bind();
+    gl.uniform2f(spreadProgram.u.texelSize, dye.texelSizeX, dye.texelSizeY);
+    gl.uniform1i(spreadProgram.u.uSource, dye.read.attach(0));
+    gl.uniform1f(spreadProgram.u.amount, p.spread);
+    gl.uniform1f(spreadProgram.u.reach, p.reach);
+    gl.uniform1f(spreadProgram.u.relax, p.relax);
+    gl.uniform1f(spreadProgram.u.time, p.time);
+    gl.uniform1f(spreadProgram.u.aspect, canvas.width / canvas.height);
+    blit(dye.write);
+    dye.swap();
+  }
+
+  function render(time, shakeX, shakeY) {
+    displayProgram.bind();
+    gl.uniform2f(displayProgram.u.texelSize, dye.texelSizeX, dye.texelSizeY);
+    gl.uniform1i(displayProgram.u.uDye, dye.read.attach(0));
+    gl.uniform1i(displayProgram.u.uVelocity, velocity.read.attach(1));
+    gl.uniform1i(displayProgram.u.uFly, fly.attach(2));
+    gl.uniform2f(displayProgram.u.dyeTexel, dye.texelSizeX, dye.texelSizeY);
+    gl.uniform2f(displayProgram.u.resolution, gl.drawingBufferWidth, gl.drawingBufferHeight);
+    gl.uniform2f(displayProgram.u.shake, shakeX, shakeY);
+    gl.uniform1f(displayProgram.u.time, time);
+    blit(null);
+  }
+
+  // ---------- milk flying at the viewer ----------
+  // Drops travel straight at the camera; the screen is a pane of glass at z = 1.
+  // X, Y: where the drop hits the glass, offset from the centre in short-side units.
+  const drops = [];
+  const toUv = (X, Y) => { const s = splatScale(); return [0.5 + X / s[0], 0.5 + Y / s[1]]; };
+
+  function addDrop(X, Y, rho, tLand, tStart) {
+    const zStart = rand(18, 26);
+    tStart = Math.min(tStart, tLand - 0.35);
+    drops.push({ X, Y, rho, tLand, speed: (zStart - 1) / (tLand - tStart), tStart, landed: false });
+  }
+
+  function createDrops() {
+    const s = splatScale();
+    const hx = s[0] / 2, hy = s[1] / 2;
+    const anywhere = () => [rand(-hx, hx) * 1.08, rand(-hy, hy) * 1.08];
+    // the main mass, a big wobbling glob dead ahead
+    addDrop(0, 0, 0.2, 1.0, 0.1);
+    for (let i = 0; i < 7; i++) {
+      const a = rand(0, Math.PI * 2), d = rand(0.05, 0.2);
+      addDrop(Math.cos(a) * d, Math.sin(a) * d, rand(0.07, 0.12), rand(0.96, 1.08), rand(0.05, 0.2));
+    }
+    // spray racing ahead of it
+    for (let i = 0; i < 16; i++) {
+      const [X, Y] = anywhere();
+      addDrop(X * 0.8, Y * 0.8, rand(0.012, 0.035), rand(0.5, 0.94), rand(0, 0.2));
+    }
+    // the trailing splash: fat drops all over the screen
+    for (let i = 0; i < 30; i++) {
+      const [X, Y] = anywhere();
+      addDrop(X, Y, rand(0.02, 0.075), rand(1.1, 2.3), rand(0.2, 0.9));
+    }
+    // fine mist
+    for (let i = 0; i < 40; i++) {
+      const [X, Y] = anywhere();
+      addDrop(X, Y, rand(0.004, 0.012), rand(0.55, 2.0), rand(0, 0.8));
+    }
+    drops.sort((a, b) => b.rho - a.rho);
+  }
+
+  function drawFly(t) {
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fly.fbo);
+    gl.viewport(0, 0, fly.width, fly.height);
+    gl.clearColor(0, 0, 0, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    for (const d of drops) {
+      if (d.landed || t < d.tStart) continue;
+      const z = 1 + (d.tLand - t) * d.speed;
+      const px = d.X / z, py = d.Y / z;
+      const rho = d.rho / z;
+      // perspective makes drops accelerate outward on screen: smear them along that motion
+      const vs = Math.hypot(d.X, d.Y) * d.speed / (z * z);
+      const stretch = 1 + Math.min(vs * 0.05, 1.6);
+      const len = Math.hypot(px, py);
+      const [ux, uy] = toUv(px, py);
+      if (len > 1e-5) stamp(fly, ux, uy, px / len, py / len, Math.pow(rho / 1.34, 2), stretch, 1.25);
+      else stamp(fly, ux, uy, 1, 0, Math.pow(rho / 1.34, 2), 1, 1.25);
+    }
+  }
+
+  // a drop hits the glass: it flattens out and throws a ring of spatter
+  function land(d) {
+    d.landed = true;
+    const [ux, uy] = toUv(d.X, d.Y);
+    const s = splatScale();
+    const len = Math.hypot(d.X, d.Y);
+    const ox = len > 0.01 ? d.X / len : 0, oy = len > 0.01 ? d.Y / len : 0;
+    const v = 250 + d.rho * 4500;
+    splat(ux, uy, ox * v * 0.35, oy * v * 0.35, 1.25, Math.pow(d.rho * 1.3 / 1.34, 2));
+    if (d.rho < 0.02) return;
+    // spikes shooting out of the impact, each ending in a bead, plus detached spatter
+    const n = d.rho > 0.1 ? 26 : Math.round(rand(4, 9));
+    const at = (r, a) => [ux + Math.cos(a) * r / s[0], uy + Math.sin(a) * r / s[1]];
+    for (let i = 0; i < n; i++) {
+      const a = rand(0, Math.PI * 2);
+      const len = d.rho * rand(0.25, 1.2);
+      const w = d.rho * rand(0.05, 0.11);
+      const sv = v * rand(0.4, 1.0);
+      const segments = 6;
+      for (let k = 0; k <= segments; k++) {
+        const f = k / segments;
+        const [x, y] = at(d.rho * 0.85 + len * f, a);
+        splat(x, y, Math.cos(a) * sv * f, Math.sin(a) * sv * f, 0.9, Math.pow(w * (1 - 0.55 * f), 2));
       }
-      if (running) raceRaf = requestAnimationFrame(step);
-    };
-    raceRaf = requestAnimationFrame(step);
+      const [bx, by] = at(d.rho * 0.85 + len * 1.08, a);
+      splat(bx, by, 0, 0, 1.1, Math.pow(w * rand(0.7, 1.2), 2));
+      if (Math.random() < 0.6) {
+        const [sx, sy] = at(d.rho * 0.85 + len * rand(1.3, 2.4), a + rand(-0.08, 0.08));
+        splat(sx, sy, 0, 0, 1.1, Math.pow(w * rand(0.3, 0.8), 2));
+      }
+    }
   }
-  $("race-btn").addEventListener("click", race);
-  new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { race(); o.disconnect(); } }, { threshold: 0.5 }).observe($("race"));
 
-  /* ---------- Karten kippen mit dem Zeiger ---------- */
-  document.querySelectorAll(".trim").forEach((c) => {
-    c.addEventListener("pointermove", (e) => {
-      const r = c.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
-      c.style.transform = `rotateY(${(x - .5) * 14}deg) rotateX(${(.5 - y) * 12}deg) translateZ(10px)`;
-      c.style.setProperty("--mx", x * 100 + "%"); c.style.setProperty("--my", y * 100 + "%");
+  // ---------- choreography ----------
+  const rand = (a, b) => a + Math.random() * (b - a);
+  const ramp = (t, a, b) => Math.min(Math.max((t - a) / (b - a), 0), 1);
+
+
+  // ---------- interaction ----------
+  const pointer = { x: 0, y: 0, px: 0, py: 0, moved: false, down: false, active: false };
+  function pointerPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    return [(e.clientX - rect.left) / rect.width, 1 - (e.clientY - rect.top) / rect.height];
+  }
+  canvas.addEventListener('pointermove', e => {
+    const [x, y] = pointerPos(e);
+    if (!pointer.active) { pointer.px = x; pointer.py = y; pointer.active = true; }
+    pointer.x = x; pointer.y = y; pointer.moved = true;
+  });
+  canvas.addEventListener('pointerdown', e => {
+    const [x, y] = pointerPos(e);
+    pointer.x = pointer.px = x; pointer.y = pointer.py = y;
+    pointer.active = true; pointer.down = true;
+    pendingDrops.push([x, y]);
+  });
+  window.addEventListener('pointerup', () => { pointer.down = false; });
+  canvas.addEventListener('pointerleave', () => { pointer.active = false; });
+  const pendingDrops = [];
+
+  function applyInput(t) {
+    for (const [x, y] of pendingDrops.splice(0)) {
+      // a drop falling into the milk: displaced ring plus outward splash
+      for (let i = 0; i < 10; i++) {
+        const a = (i / 10) * Math.PI * 2 + rand(-0.1, 0.1);
+        const v = rand(260, 420);
+        splat(x + Math.cos(a) * 0.012, y + Math.sin(a) * 0.012, Math.cos(a) * v, Math.sin(a) * v, 0.06, 0.0005);
+      }
+      splat(x, y, 0, 0, t > 6 ? -0.75 : 0.9, 0.0009);
+    }
+    if (pointer.moved) {
+      const s = splatScale();
+      const dx = (pointer.x - pointer.px) * s[0];
+      const dy = (pointer.y - pointer.py) * s[1];
+      const len = Math.hypot(dx, dy);
+      if (len > 0) {
+        // dragging a finger through the milk parts it; it flows back on its own
+        splat(pointer.x, pointer.y, dx * 5200, dy * 5200, -Math.min(len * 22, 0.55), 0.00055);
+      }
+      pointer.px = pointer.x; pointer.py = pointer.y; pointer.moved = false;
+    }
+  }
+
+  // ---------- main loop ----------
+  // Timeline runs on simulated time so slow devices see the same choreography.
+  const DELAY = 0.45;
+  let last = performance.now();
+  let t = -DELAY;
+  let nextRipple = 7;
+  let shake = 0;
+  createDrops();
+
+  function frame(now) {
+    const dt = Math.min((now - last) / 1000, 0.033);
+    last = now;
+    tick(dt);
+    requestAnimationFrame(frame);
+  }
+
+  function tick(dt) {
+    t += dt;
+
+    if (resizeCanvas()) initFramebuffers();
+
+    for (const d of drops) {
+      if (!d.landed && t >= d.tLand) {
+        land(d);
+        if (d.rho > 0.15) shake = 1;
+      }
+    }
+
+    // after it settles the surface keeps breathing a little
+    if (t > nextRipple) {
+      nextRipple = t + rand(0.35, 0.9);
+      const a = rand(0, Math.PI * 2);
+      splat(rand(0, 1), rand(0, 1), Math.cos(a) * 70, Math.sin(a) * 70, 0.12, rand(0.002, 0.006));
+    }
+
+    applyInput(t);
+
+    step(dt, {
+      time: t,
+      gravity: 70 * ramp(t, 1.1, 1.6) * (1 - ramp(t, 2.8, 4.2)),
+      spread: t < 6.5 ? ramp(t, 1.1, 2.8) : 0.35,
+      reach: 0.9 + 0.1 * ramp(t, 1.8, 3.8),
+      relax: 0.004 + 0.012 * ramp(t, 5, 8),
     });
-    c.addEventListener("pointerleave", () => (c.style.transform = ""));
-  });
+    drawFly(t);
 
-  /* ---------- Bühne: Abheben und Kickflip ---------- */
-  const stage = $("stage"), flyCar = $("fly-car"), sfx = particles($("stage-fx"));
-  let mode = "rest", modeStart = 0, stageRaf = 0, lastS = 0, hoverOn = false;
-  function stageState(now) {
-    const t = now - modeStart, H = stage.clientHeight;
-    let lift = 0, flip = 1, rot = 0;
-    if (mode === "hover") { lift = H * 0.22 * easeOut(clamp01(t / 900)) + Math.sin(t / 380) * 6; rot = Math.sin(t / 700) * 0.03; }
-    if (mode === "land") { lift = H * 0.22 * (1 - easeInOut(clamp01(t / 700))); }
-    if (mode === "flip") {
-      const u = clamp01(t / 1300);
-      lift = H * 0.32 * Math.sin(u * Math.PI);
-      flip = Math.cos(easeInOut(clamp01((t - 200) / 900)) * Math.PI * 2);
-      rot = Math.sin(u * Math.PI) * -0.08;
-      if (u >= 1) { mode = hoverOn ? "hover" : "rest"; modeStart = now - (hoverOn ? 900 : 0); }
-    }
-    if (mode === "land" && t > 700) mode = "rest";
-    return { lift, flip, rot, thrust: mode === "hover" || (mode === "flip" && t < 500) || (mode === "land" && t < 600) };
+    shake *= Math.exp(-dt * 7);
+    const sa = t * 61.0;
+    render(t, Math.sin(sa) * shake * 0.018, Math.cos(sa * 1.3) * shake * 0.014);
   }
-  function stageFrame(now) {
-    const dt = lastS ? Math.min(50, now - lastS) : 16; lastS = now;
-    const s = stageState(now);
-    flyCar.style.transform = `translate(-50%, ${-s.lift}px) rotate(${s.rot}rad) scaleY(${s.flip})`;
-    if (s.thrust) {
-      const r = flyCar.getBoundingClientRect(), sr = stage.getBoundingClientRect();
-      const y = r.top - sr.top + r.height * (s.flip > 0 ? 0.71 : 0.29);
-      for (const px of [0.18, 0.5, 0.82]) sfx.puff(r.left - sr.left + r.width * px + (Math.random() - .5) * 8, y, (Math.random() - .5) * 2, 4 + Math.random() * 3, { r: 5, grow: 1.1, decay: 0.03, drag: 0.92 });
-    }
-    sfx.step(dt);
-    stageRaf = mode !== "rest" || sfx.list.length ? requestAnimationFrame(stageFrame) : 0;
-  }
-  function setMode(m) { mode = m; modeStart = performance.now(); if (!stageRaf) { lastS = 0; stageRaf = requestAnimationFrame(stageFrame); } }
-  $("btn-hover").addEventListener("click", (e) => {
-    hoverOn = !hoverOn;
-    e.currentTarget.textContent = hoverOn ? "Landen" : "Abheben";
-    if (mode !== "flip") setMode(hoverOn ? "hover" : "land");
-  });
-  $("btn-flip").addEventListener("click", () => { if (mode !== "flip") setMode("flip"); });
-  // Beim ersten Hinsehen einmal von selbst flippen
-  new IntersectionObserver((es, o) => { if (es[0].isIntersecting && !reduceMotion) { setTimeout(() => setMode("flip"), 500); o.disconnect(); } }, { threshold: 0.6 }).observe(stage);
-
-  /* ---------- Zeitleiste füllt sich beim Scrollen ---------- */
-  const tl = $("timeline"), bar = $("tl-bar"), items = [...tl.querySelectorAll("li")];
-  function onScroll() {
-    const r = tl.getBoundingClientRect(), mid = window.innerHeight * 0.6;
-    const h = Math.max(0, Math.min(r.height - 12, mid - r.top));
-    bar.style.height = h + "px";
-    items.forEach((li) => li.classList.toggle("lit", li.offsetTop + 10 <= h));
-  }
-  window.addEventListener("scroll", onScroll, { passive: true });
-  onScroll();
-
-  window.addEventListener("resize", () => { sizeStars(); fx.size(); sfx.size(); });
-})();
-</script>
-<script type="module">
-  // 3D erst laden, wenn man in die Nähe scrollt – das Intro bleibt schnell
-  const viewer = document.getElementById("viewer"), msg = document.getElementById("msg3d");
-  const io = new IntersectionObserver(async (es) => {
-    if (!es[0].isIntersecting) return;
-    io.disconnect();
-    try {
-      const { start } = await import("./car3d.js");
-      start(document.getElementById("c3d"), { flip: document.getElementById("b3-flip"), track: document.getElementById("b3-track"), lights: document.getElementById("b3-lights") });
-      msg.style.opacity = 0;
-    } catch (e) {
-      console.error(e);
-      msg.textContent = "3D geht auf diesem Gerät leider nicht";
-    }
-  }, { rootMargin: "400px" });
-  io.observe(viewer);
+  requestAnimationFrame(frame);
+}
 </script>
 </body>
 </html>
